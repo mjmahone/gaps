@@ -7,23 +7,6 @@
 > adopted independently.
 
 ```
-"""
-Indicates a type that can be (re-)fetched with a type-specific root field.
-Guarantees that:
-- There exists a field, `Query.fetch__<Type>(id: ID!): <Type>`
-- `@fetchable(field_name:)` is the name of a field that produces a type-unique identifier,
-  that is `<field_name>: ID @semanticNonNull` or `<field_name>: ID!`.
-- `@fetchable(field_name:)`'s field value can be used to fetch an item with the exact same *identity*, via `Query.fetch__<Type>(id: <field_name value>)`.
-- a single-item query field, `Query.fetch__<Type>(id: ID!): <Type>`, exists.
-- a multi-item query field, `Query.multifetch__<Type>(ids: [ID!]!): [<Type>MultiFetchEdge!]!`, exists.
-- `multifetch__<Type>` returns exactly one edge per input `id`, in the same order as the input `ids` (the result list has the same length as the input list).
-- `type <Type>MultiFetchEdge { node: <Type>, node_id: ID }` exists. `node` is `null` if the corresponding `id` cannot be resolved; `node_id` is always the input `id` (which, when `node` is non-null, equals `node`'s `<field_name>` value).
-
-All `@fetchable` types must themselves be `@strong`, but the `@fetchable(field_name:)` does *not* need to
-match the `@strong(field_name:)`.
-
-All types `implements`-ing an `@fetchable` interface must themselves be `@fetchable`, but *need not* share the same `@fetchable(field_name:)`.
-"""
 directive @fetchable(field_name: String!) on OBJECT | INTERFACE
 ```
 

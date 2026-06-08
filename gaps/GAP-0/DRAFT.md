@@ -7,22 +7,6 @@
 > two are designed to be read together but may be adopted independently.
 
 ```
-"""
-Indicates a type has an identity that is unique *across all values of the same type*.
-Guarantees that:
-- `<__typename> + <strong_id__>` forms a globally unique value
-- If `field_name: "<field>"` is provided, there is a field on the type, `<field>: ID @semanticNonNull` or `<field>: ID!`.
-- If `field_name: "<field>"` is provided, `strong_id__` and `<field>` produce the same value.
-
-For Object types, `@strong(field_name:)` is non-nullable.
-
-For Interface types, `@strong(field_name:)` is optional.
-All types `implements`-ing an `@strong` interface must themselves be `@strong`.
-All types `implements`-ing an interface with `@strong(field_name:)` set must provide the same `@strong(field_name:)` value.
-
-If a type is `@strong`, then the `strong_id__` meta-field is defined as `strong_id__: ID @semanticNonNull`.
-If a type is not `@strong`, then the `strong_id__` meta-field is defined as `strong_id__: ID` and is always `null`.
-"""
 directive @strong(field_name: String) on OBJECT | INTERFACE
 ```
 
