@@ -120,7 +120,7 @@ query RefetchPhotoStories($ids: [ID!]!) {
 
 ## Relationship to @strong
 
-Every `@fetchable` type must also be `@strong`. The `@fetchable(field_name:)`
+When using `@strong` every `@fetchable` type must also be `@strong`. The `@fetchable(field_name:)`
 need not match the `@strong(field_name:)`: identity (used for merging objects in
 a normalized cache) and fetchability (used for re-resolution) may be backed by
 different fields. This is useful, for example, when a small hashed field is used
@@ -136,12 +136,13 @@ For each `@fetchable` type `<Type>`:
   `Query.multifetch__<Type>(ids: [ID!]!): [<Type>MultiFetchEdge!]!`, exists.
 - `type <Type>MultiFetchEdge { node: <Type>, node_id: ID }` exists.
 
-The value of the `@fetchable(field_name:)` field can be passed to
-`Query.fetch__<Type>(id:)` to fetch an item with the exact same _identity_.
+`field_name` is always required. It names the field whose value can be passed to
+the generated `Query.fetch__<Type>(id:)` and `Query.multifetch__<Type>(ids:)`
+fields to (re-)fetch the object with the exact same _identity_.
 
-`multifetch__<Type>` must return exactly one `<Type>MultiFetchEdge` per input
-`id`, in the same order as the input `ids`: the result list always has the same
-length as the input list. For each edge:
+`multifetch__<Type>(ids: $ids)` must return exactly one `<Type>MultiFetchEdge`
+per input `id`, in the same order as the input `ids`: the result list always has
+the same length as the input list. For each edge:
 
 - `node` is the resolved `<Type>`, or {null} if the corresponding `id` cannot be
   resolved.
@@ -160,8 +161,10 @@ field must exist and be typed `<field>: ID @semanticNonNull` or `<field>: ID!`.
 
 ## @fetchable on Interface types
 
-All types implementing an `@fetchable` interface must themselves be `@fetchable`,
-but _need not_ share the same `@fetchable(field_name: "<field>")` value.
+`field_name` is required on an `@fetchable` interface, just as it is on an
+`@fetchable` object. All types implementing an `@fetchable` interface must
+themselves be `@fetchable`, but the interface and its implementations each
+specify their own `field_name` and _need not_ share the same value.
 
 ## New Implementation Recommendations
 
